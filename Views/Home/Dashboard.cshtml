@@ -1,0 +1,124 @@
+@model List<Opportunity>
+@{
+    ViewData["Title"]="Dahshboard";
+  var active= Model.Where(x=>x.Status == "Active").Count();
+  var submitted= Model.Where(x=>x.Status == "Submitted").Count();
+  var saved= Model.Where(x=>x.Status == "Saved").Count();
+  var closed= Model.Where(x=>x.Status == "Closed").Count();
+
+
+
+
+}
+
+<div>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+
+        <!-- Search form -->
+        <form asp-asp-controller="Home" asp-action="Dashboard" method="get"  class="form-inline">
+        <input class="form-control form-control-sm ml-3 w-75" type="text" placeholder="Search" name="searchString" aria-label="Search">
+        <i class="material-icons">search</i><button type="submit">Search</button>
+        </form>
+        </div>
+
+      <div class="col-md-6 mb-4">
+          <a asp-area="" asp-controller="Home" asp-action="Create">
+            <i class="float-right medium material-icons">add_box</i>
+          </a>
+      </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+            <div class="card-body text-success">
+                <h5 class="card-title">Active Opportunities</h5>
+              
+                <p class="card-text font-weight-bold">@active</p> 
+                @* <a href="#" class="btn btn-primary">Go somewhere</a> *@
+            </div>
+            </div>
+        </div>
+        <div class="col-md -3">
+            <div class="card">
+            <div class="card-body text-info">
+                <h5 class="card-title">Submitted Aplications</h5>
+                <p class="card-text  font-weight-bold ">@submitted</p>
+                @* <a href="#" class="btn btn-primary">Go somewhere</a> *@
+            </div>
+            </div>
+        </div>
+        <div class="col-md -3">
+            <div class="card">
+            <div class="card-body text-warning">
+                <h5 class="card-title">Saved Opportunities</h5>
+                <p class="card-text  font-weight-bold">@saved</p>
+                @* <a href="#" class="btn btn-primary">Go somewhere</a> *@
+            </div>
+            </div>
+        </div><div class="col-md -3">
+            <div class="card">
+            <div class="card-body  text-danger ">
+                <h5 class="card-title">Closed Opportunities</h5>
+                <p class="card-text font-weight-bold">@closed</p>
+                @* <a href="#" class="btn btn-primary">Go somewhere</a> *@
+            </div>
+            </div>
+        </div>
+    </div>
+
+ 
+    
+    <div class="row p-3">
+
+            @foreach (var item in Model)
+                {
+        <div class="col-sm-12 p-3">
+             <div id="accordion_@item.Id">
+
+                <div class="card">
+                    <div class="card-header" id="headingOne_@item.Id">
+                   
+                    <h5 class="mb-0 text-center">
+
+                        <button class="btn collapsed list-group-item list-group-item-action list-group-item-info font-weight-bold" data-toggle="collapse" data-target="#collapseOne_@item.Id" aria-expanded="true" aria-controls="collapseOne_@item.Id">
+                       @item.CompanyName
+                        </button>
+                    </h5>
+                    </div>
+
+                    <div id="collapseOne_@item.Id" class="collapse" aria-labelledby="headingOne" data-parent="#accordion_@item.Id">
+                    <div class="card-body">
+                         <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>Role: </strong>@item.Role </li>
+                        <li class="list-group-item"><strong>Link: </strong><a href="@item.Link" target="_blank">@item.Link</a> </li>
+                        <li class="list-group-item"><strong>Apply By: </strong> @item.Date.ToString(string.Format("dd/MM/yyyy"))</li>
+                        <li class="list-group-item"><strong>Status: </strong> @item.Status</li>
+                        <li class="list-group-item"><strong>Job Description: <br/><br/></strong>@Html.Raw(item.JobDescription.Replace(Environment.NewLine, "<br/>"))</li>
+                        <li class="list-group-item"><strong>Note: </strong>@item.Note</li>
+                    </ul>
+                        <div class="float-right p-3">
+                             <a asp-action="Update" asp-route-id="@item.Id" class="card-link">Edit
+                            <i class="material-icons">edit</i>
+                        </a> 
+                         <form asp-action="Delete" style="display: inline;" asp-route-id="@item.Id">
+                            <input type="hidden" />
+                             <button type="submit" class="btn btn-danger">Delete <i class="material-icons">delete</i></button> 
+                        </form>
+                        </div>
+                        
+                        <div class="card-footer text-muted text-center">
+                            @{int totalDays = Convert.ToInt32((DateTime.UtcNow.Date - item.Date).TotalDays);}
+                            @totalDays Days
+                        </div>
+                     
+                    </div>
+                </div>
+            </div>
+       
+        
+         </div>
+                
+    </div>
+                }
